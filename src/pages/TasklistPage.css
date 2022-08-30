@@ -1,0 +1,44 @@
+.check {
+  border: 1px solid red;
+}
+
+.bgColor {
+  background-color: #efefef;
+}
+.headerContent {
+  display: flex;
+  padding-left: 1rem;
+  background: #f8f9ff;
+}
+
+.left-half {
+  flex: 2;
+  text-align: left;
+}
+.right-half {
+  flex: 1;
+}
+.addBtn {
+  display: flex;
+  float: right;
+  position: relative;
+  top: -16px;
+  left: -15px;
+  z-index: 40;
+}
+
+.actionSection {
+  display: flex;
+  padding: 1rem;
+  width: 100%;
+}
+
+.checkboxLabel {
+  flex: 3;
+}
+.actionBtnCall {
+  flex: 1;
+}
+.helperText {
+  padding-left: 30px;
+}
