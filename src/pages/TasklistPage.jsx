@@ -82,8 +82,23 @@ export default function TaskListView() {
     const [timeValueEdit, settimeValueEdit] = React.useState("");
     const [getIdValue, setIdValue] = React.useState("");
 
+
+    const [checkedState, setCheckedState] = React.useState(false
+    );
+
+
+    const handleOnChange = (e) => {
+
+        console.log(e)
+
+        setCheckedState(e.target.checked);
+
+    };
+
+
     const dispatch = useDispatch();
     let list = useSelector((state) => state.toDoReducer.toDoList);
+
 
 
     const handleSubmit = () => {
@@ -171,7 +186,14 @@ export default function TaskListView() {
                                                 <FormGroup>
                                                     <FormControlLabel
                                                         control={
-                                                            <Checkbox color="warning" />
+                                                            <Checkbox color="warning"
+                                                                id={`custom-checkbox-${index}`}
+                                                                name={item.data.title}
+                                                                value={item.data.title}
+                                                                checked={checkedState[index]}
+                                                                onChange={(e) => handleOnChange(e)}
+
+                                                            />
                                                         }
                                                         label={item.data.title}
                                                     />

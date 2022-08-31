@@ -10,7 +10,7 @@ const initialState = {
       },
     },
     {
-      id: 1,
+      id: 2,
       data: {
         title: "Buy Pizza on the way to work",
         time: {
