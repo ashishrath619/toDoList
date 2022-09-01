@@ -81,19 +81,39 @@ export default function TaskListView() {
     const [getTitleEdit, setTitleEdit] = React.useState("");
     const [timeValueEdit, settimeValueEdit] = React.useState("");
     const [getIdValue, setIdValue] = React.useState("");
+    const [isError, setisError] = React.useState(true);
+    const [checkedItems, setCheckedItems] = React.useState({});
+    const [getMsgTitle, setMasgTitle] = React.useState('');
 
-
-    const [checkedState, setCheckedState] = React.useState(false
+    const [getMsgTime, setMasgTime] = React.useState(''
     );
 
 
-    const handleOnChange = (e) => {
+    const handleOnChange = (event) => {
 
-        console.log(e)
+        console.log("ddd", event)
 
-        setCheckedState(e.target.checked);
+        // setCheckedState(e.target.checked);
+        setCheckedItems({
+            ...checkedItems,
+            [event.target.name]: event.target.checked
+        });
+        // console.log({
+        //     ...checkedItems,
+        //     [event.target.name]: event.target.checked
+        // })
+        // setDisable(event.target.name)
+
+
 
     };
+
+    React.useEffect(() => {
+        console.log("checkedItems: ", checkedItems);
+    }, [checkedItems, isError]);
+
+
+    console.log("ddd", isError)
 
 
     const dispatch = useDispatch();
@@ -102,14 +122,35 @@ export default function TaskListView() {
 
 
     const handleSubmit = () => {
-        let body = {
-            title: getTitle,
-            time: timeValue,
-        };
-        dispatch(Add_Data(body));
-        setTitle("");
-        settimeValue("");
-        setOpen(false);
+
+        if (typeof getTitle !== "undefined" && getTitle == "") {
+            if (!getTitle.match(/^[a-zA-Z]+$/)) {
+                //   formIsValid = false;
+                //   errors["name"] = "Only letters";
+                setMasgTitle("Please enter a valid title")
+                setisError(false)
+            }
+        }
+        if (typeof timeValue !== "undefined" && timeValue == "") {
+            //   formIsValid = false;
+            //   errors["name"] = "Only letters";
+            setMasgTime("Please enter a valid time")
+            setisError(false)
+
+        }
+
+        if (!isError) {
+            let body = {
+                title: getTitle,
+                time: timeValue,
+            };
+            dispatch(Add_Data(body));
+            setTitle("");
+            settimeValue("");
+            setMasgTitle("")
+            setMasgTime("")
+            setOpen(false);
+        }
     };
     const handleClickOpen = () => {
         setOpen(true);
@@ -128,16 +169,36 @@ export default function TaskListView() {
         setIdValue(item.id);
         setTitleEdit(item.data.title);
         settimeValueEdit(item.data.time.$d);
+        setMasgTitle("")
+        setMasgTime("")
     };
 
     const handleupdate = () => {
-        var body = {
-            title: getTitleEdit,
-            time: timeValueEdit,
-        };
+        if (typeof getTitleEdit !== "undefined" && getTitleEdit == "") {
+            if (!getTitle.match(/^[a-zA-Z]+$/)) {
 
-        dispatch(Edit_Data({ id: getIdValue, body }));
-        setOpenEdit(false);
+                setMasgTitle("Please enter a valid title")
+                setisError(false)
+            }
+        }
+        if (typeof timeValue !== "undefined" && timeValue == "") {
+            setMasgTime("Please enter a valid time")
+            setisError(false)
+
+        }
+
+        if (!isError) {
+
+            var body = {
+                title: getTitleEdit,
+                time: timeValueEdit,
+            };
+
+            dispatch(Edit_Data({ id: getIdValue, body }));
+            setOpenEdit(false);
+            setMasgTitle("")
+            setMasgTime("")
+        }
     };
 
     return (
@@ -190,12 +251,11 @@ export default function TaskListView() {
                                                                 id={`custom-checkbox-${index}`}
                                                                 name={item.data.title}
                                                                 value={item.data.title}
-                                                                checked={checkedState[index]}
-                                                                onChange={(e) => handleOnChange(e)}
+                                                                onChange={handleOnChange}
 
                                                             />
                                                         }
-                                                        label={item.data.title}
+                                                        label=<span style={{ textDecoration: checkedItems[item.data.title] ? 'line-through' : '' }}>{item.data.title}</span>
                                                     />
                                                 </FormGroup>
                                                 <FormHelperText className="helperText">
@@ -209,6 +269,9 @@ export default function TaskListView() {
                                                 aria-label="upload picture"
                                                 component="span"
                                                 onClick={() => dispatch(Delete_Data(item.id))}
+                                                disabled={checkedItems[item.data.title]}
+                                            // checked={}
+
                                             >
                                                 <DeleteIcon />
                                             </IconButton>{" "}
@@ -218,6 +281,8 @@ export default function TaskListView() {
                                                 aria-label="upload picture"
                                                 component="span"
                                                 onClick={() => handle_Edit(item, index)}
+                                                disabled={checkedItems[item.data.title]}
+
                                             >
                                                 <EditIcon />
                                             </IconButton>
@@ -252,6 +317,7 @@ export default function TaskListView() {
                                     value={getTitle}
                                     onChange={(e) => setTitle(e.target.value)}
                                 />
+                                <span style={{ color: 'red' }}>{getMsgTitle}</span>
                                 <br />
                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                                     <TimePicker
@@ -263,6 +329,8 @@ export default function TaskListView() {
                                         renderInput={(params) => <TextField {...params} />}
                                     />
                                 </LocalizationProvider>
+                                <span style={{ color: 'red' }}>{getMsgTime}</span>
+
                                 <br />
 
                                 <Button
@@ -298,6 +366,8 @@ export default function TaskListView() {
                                     value={getTitleEdit}
                                     onChange={(e) => setTitleEdit(e.target.value)}
                                 />
+                                <span style={{ color: 'red' }}>{getMsgTitle}</span>
+
                                 <br />
                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                                     <TimePicker
@@ -310,6 +380,8 @@ export default function TaskListView() {
                                         renderInput={(params) => <TextField {...params} />}
                                     />
                                 </LocalizationProvider>
+                                <span style={{ color: 'red' }}>{getMsgTime}</span>
+
                                 <br />
 
                                 <Button
